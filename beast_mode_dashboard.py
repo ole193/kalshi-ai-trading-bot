@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Beast Mode Trading Dashboard 🚀
+Beast Mode Trading Dashboard [START]
 
 Real-time performance monitoring for the Unified Advanced Trading System.
 
@@ -65,7 +65,7 @@ class BeastModeDashboard:
         """
         Display live dashboard with real-time updates.
         """
-        print("🚀 BEAST MODE TRADING DASHBOARD 🚀")
+        print("[START] BEAST MODE TRADING DASHBOARD [START]")
         print("=" * 60)
         
         try:
@@ -75,15 +75,15 @@ class BeastModeDashboard:
                 
                 # Header
                 now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                print(f"🚀 BEAST MODE DASHBOARD - {now} 🚀")
+                print(f"[START] BEAST MODE DASHBOARD - {now} [START]")
                 print("=" * 60)
 
                 # Trading mode banner — always visible so users know their mode
                 paper_mode = getattr(settings.trading, 'paper_trading_mode', True)
                 if paper_mode:
-                    print("📝 PAPER MODE  — orders are simulated, no real money at risk")
+                    print("[PAPER] PAPER MODE  — orders are simulated, no real money at risk")
                 else:
-                    print("🔴 LIVE MODE   — REAL MONEY IS BEING TRADED ON KALSHI")
+                    print("[LIVE] LIVE MODE   — REAL MONEY IS BEING TRADED ON KALSHI")
                 print("=" * 60)
                 
                 # Get current performance
@@ -98,15 +98,15 @@ class BeastModeDashboard:
                 await self._display_system_health(performance)
                 
                 print("\n" + "=" * 60)
-                print("🔄 Updates every 30 seconds | Ctrl+C to exit")
+                print("[RUN] Updates every 30 seconds | Ctrl+C to exit")
                 
                 # Wait 30 seconds before refresh
                 await asyncio.sleep(30)
                 
         except KeyboardInterrupt:
-            print("\n\n👋 Dashboard stopped. Thanks for using Beast Mode!")
+            print("\n\n[BYE] Dashboard stopped. Thanks for using Beast Mode!")
         except Exception as e:
-            print(f"\n❌ Dashboard error: {e}")
+            print(f"\n[ERROR] Dashboard error: {e}")
 
     async def get_comprehensive_performance(self) -> Dict:
         """
@@ -150,7 +150,7 @@ class BeastModeDashboard:
 
     async def _display_portfolio_overview(self, performance: Dict):
         """Display high-level portfolio overview."""
-        print("\n📊 PORTFOLIO OVERVIEW")
+        print("\n[STATS] PORTFOLIO OVERVIEW")
         print("-" * 30)
         
         try:
@@ -167,19 +167,19 @@ class BeastModeDashboard:
             total_capital = system_perf.get('total_capital', 10000)
             capital_used_pct = (total_exposure / total_capital) * 100 if total_capital > 0 else 0
             
-            print(f"💰 Total Capital: ${total_capital:,.0f}")
-            print(f"📈 Current Exposure: ${total_exposure:,.0f} ({capital_used_pct:.1f}%)")
-            print(f"🎯 Active Positions: {len(positions)}")
-            print(f"📅 Today's Trades: {recent_trades.get('trades_today', 0)}")
-            print(f"💵 Today's P&L: ${recent_trades.get('pnl_today', 0):+.2f}")
-            print(f"📊 Win Rate (7d): {recent_trades.get('win_rate_7d', 0):.1%}")
+            print(f"[$] Total Capital: ${total_capital:,.0f}")
+            print(f"[UP] Current Exposure: ${total_exposure:,.0f} ({capital_used_pct:.1f}%)")
+            print(f"[TARGET] Active Positions: {len(positions)}")
+            print(f"[DATE] Today's Trades: {recent_trades.get('trades_today', 0)}")
+            print(f"[$] Today's P&L: ${recent_trades.get('pnl_today', 0):+.2f}")
+            print(f"[STATS] Win Rate (7d): {recent_trades.get('win_rate_7d', 0):.1%}")
             
         except Exception as e:
             print(f"Error displaying portfolio overview: {e}")
 
     async def _display_strategy_breakdown(self, performance: Dict):
         """Display performance by strategy type."""
-        print("\n💡 STRATEGY BREAKDOWN")
+        print("\n[IDEA] STRATEGY BREAKDOWN")
         print("-" * 30)
         
         try:
@@ -203,22 +203,22 @@ class BeastModeDashboard:
                     directional_positions += 1
                     total_dir_exposure += getattr(pos, 'entry_price', 0) * getattr(pos, 'quantity', 0)
             
-            print(f"🎯 Market Making:")
+            print(f"[TARGET] Market Making:")
             print(f"   Positions: {market_making_positions}")
             print(f"   Exposure: ${total_mm_exposure:,.0f}")
             
-            print(f"📈 Directional Trading:")
+            print(f"[UP] Directional Trading:")
             print(f"   Positions: {directional_positions}")
             print(f"   Exposure: ${total_dir_exposure:,.0f}")
             
-            print(f"🔮 Arbitrage: Coming Soon!")
+            print(f"[MAGIC] Arbitrage: Coming Soon!")
             
         except Exception as e:
             print(f"Error displaying strategy breakdown: {e}")
 
     async def _display_risk_metrics(self, performance: Dict):
         """Display risk management metrics."""
-        print("\n⚠️  RISK METRICS")
+        print("\n[WARNING]  RISK METRICS")
         print("-" * 30)
         
         try:
@@ -243,24 +243,24 @@ class BeastModeDashboard:
             )
             exit_coverage = (positions_with_exits / total_positions) * 100 if total_positions > 0 else 0
             
-            print(f"🎲 Portfolio Concentration: {concentration_risk:.1f}%")
-            print(f"🛡️  Exit Strategy Coverage: {exit_coverage:.0f}%")
-            print(f"⏰ Avg Time to Expiry: {self._calculate_avg_time_to_expiry(positions):.1f} days")
-            print(f"🔄 Diversification Score: {self._calculate_diversification_score(positions):.2f}")
+            print(f"[DICE] Portfolio Concentration: {concentration_risk:.1f}%")
+            print(f"[SHIELD]  Exit Strategy Coverage: {exit_coverage:.0f}%")
+            print(f"[TIME] Avg Time to Expiry: {self._calculate_avg_time_to_expiry(positions):.1f} days")
+            print(f"[RUN] Diversification Score: {self._calculate_diversification_score(positions):.2f}")
             
         except Exception as e:
             print(f"Error displaying risk metrics: {e}")
 
     async def _display_position_status(self, performance: Dict):
         """Display current positions with exit strategies."""
-        print("\n🎯 POSITION STATUS")
+        print("\n[TARGET] POSITION STATUS")
         print("-" * 30)
         
         try:
             positions = performance.get('current_positions', [])
             
             if not positions:
-                print("📭 No active positions")
+                print("[EMPTY] No active positions")
                 return
             
             # Display top 5 positions
@@ -297,7 +297,7 @@ class BeastModeDashboard:
 
     async def _display_cost_analysis(self, performance: Dict):
         """Display AI cost analysis and budget tracking."""
-        print("\n💸 COST ANALYSIS")
+        print("\n[$] COST ANALYSIS")
         print("-" * 30)
         
         try:
@@ -307,26 +307,26 @@ class BeastModeDashboard:
             daily_budget = getattr(settings.trading, 'daily_ai_budget', 10.0)
             budget_used_pct = (daily_cost / daily_budget) * 100 if daily_budget > 0 else 0
             
-            print(f"💰 Daily AI Spending: ${daily_cost:.2f} / ${daily_budget:.2f} ({budget_used_pct:.1f}%)")
+            print(f"[$] Daily AI Spending: ${daily_cost:.2f} / ${daily_budget:.2f} ({budget_used_pct:.1f}%)")
             
             # Budget status
             if budget_used_pct < 50:
-                status = "🟢 HEALTHY"
+                status = "[GREEN] HEALTHY"
             elif budget_used_pct < 80:
-                status = "🟡 MODERATE"
+                status = "[YELLOW] MODERATE"
             else:
-                status = "🔴 HIGH"
+                status = "[RED] HIGH"
             
-            print(f"📊 Budget Status: {status}")
-            print(f"🔄 Analysis Count Today: {cost_analysis.get('analyses_today', 0)}")
-            print(f"💡 Avg Cost per Analysis: ${cost_analysis.get('avg_cost_per_analysis', 0):.3f}")
+            print(f"[STATS] Budget Status: {status}")
+            print(f"[RUN] Analysis Count Today: {cost_analysis.get('analyses_today', 0)}")
+            print(f"[IDEA] Avg Cost per Analysis: ${cost_analysis.get('avg_cost_per_analysis', 0):.3f}")
             
         except Exception as e:
             print(f"Error displaying cost analysis: {e}")
 
     async def _display_system_health(self, performance: Dict):
         """Display system health and operational metrics."""
-        print("\n🏥 SYSTEM HEALTH")
+        print("\n[HEALTH] SYSTEM HEALTH")
         print("-" * 30)
         
         try:
@@ -334,19 +334,19 @@ class BeastModeDashboard:
 
             # Trading mode — always shown so users know paper vs live
             paper_mode = getattr(settings.trading, 'paper_trading_mode', True)
-            mode_label = "📝 PAPER MODE (simulated)" if paper_mode else "🔴 LIVE MODE (real money)"
-            print(f"💱 Trading Mode: {mode_label}")
+            mode_label = "[MEMO] PAPER MODE (simulated)" if paper_mode else "[RED] LIVE MODE (real money)"
+            print(f"[EXCHANGE] Trading Mode: {mode_label}")
 
             # System status indicators
-            print(f"📊 Available Markets: {available_markets}")
-            print(f"🔌 System Status: {'🟢 OPERATIONAL' if available_markets > 0 else '🔴 LIMITED'}")
-            print(f"🚀 Beast Mode: {'✅ ACTIVE' if available_markets > 0 else '⏸️  STANDBY'}")
+            print(f"[STATS] Available Markets: {available_markets}")
+            print(f"[PLUG] System Status: {'[GREEN] OPERATIONAL' if available_markets > 0 else '[RED] LIMITED'}")
+            print(f"[START] Beast Mode: {'[OK] ACTIVE' if available_markets > 0 else '⏸️  STANDBY'}")
             
             # Performance targets
             system_perf = performance.get('system_performance', {})
             capital_allocation = system_perf.get('capital_allocation', {})
             
-            print(f"\n📈 Strategy Allocation:")
+            print(f"\n[UP] Strategy Allocation:")
             print(f"   Market Making: {capital_allocation.get('market_making', 0.4):.0%}")
             print(f"   Directional: {capital_allocation.get('directional', 0.5):.0%}")
             print(f"   Arbitrage: {capital_allocation.get('arbitrage', 0.1):.0%}")
@@ -416,20 +416,20 @@ class BeastModeDashboard:
             df = pd.DataFrame(data)
             df.to_csv(filename, index=False)
             
-            print(f"✅ Performance data exported to {filename}")
+            print(f"[OK] Performance data exported to {filename}")
             
         except Exception as e:
-            print(f"❌ Error exporting data: {e}")
+            print(f"[ERROR] Error exporting data: {e}")
 
     async def show_summary(self):
         """Show quick performance summary."""
-        print("🚀 BEAST MODE SUMMARY 🚀")
+        print("[START] BEAST MODE SUMMARY [START]")
         print("=" * 40)
 
         # Trading mode banner
         paper_mode = getattr(settings.trading, 'paper_trading_mode', True)
-        mode_label = "📝 PAPER MODE (simulated)" if paper_mode else "🔴 LIVE MODE (real money)"
-        print(f"💱 Trading Mode: {mode_label}")
+        mode_label = "[MEMO] PAPER MODE (simulated)" if paper_mode else "[RED] LIVE MODE (real money)"
+        print(f"[EXCHANGE] Trading Mode: {mode_label}")
         print()
         
         performance = await self.get_comprehensive_performance()
@@ -438,10 +438,10 @@ class BeastModeDashboard:
         daily_cost = performance.get('daily_ai_cost', 0)
         available_markets = performance.get('available_markets', 0)
         
-        print(f"📊 Active Positions: {len(positions)}")
-        print(f"💰 Daily AI Cost: ${daily_cost:.2f}")
-        print(f"📈 Available Markets: {available_markets}")
-        print(f"🚀 System Status: {'ACTIVE' if available_markets > 0 else 'STANDBY'}")
+        print(f"[STATS] Active Positions: {len(positions)}")
+        print(f"[$] Daily AI Cost: ${daily_cost:.2f}")
+        print(f"[UP] Available Markets: {available_markets}")
+        print(f"[START] System Status: {'ACTIVE' if available_markets > 0 else 'STANDBY'}")
 
 async def main():
     """Main entry point for the dashboard."""
@@ -467,7 +467,7 @@ async def main():
             await dashboard.show_live_dashboard()
 
     except Exception as e:
-        print(f"❌ Dashboard error: {e}")
+        print(f"[ERROR] Dashboard error: {e}")
 
 
 if __name__ == "__main__":

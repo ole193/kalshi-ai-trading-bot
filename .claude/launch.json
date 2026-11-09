@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "kalshi-dashboard",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["cli.py", "dashboard"],
+      "port": 8502
+    }
+  ]
+}

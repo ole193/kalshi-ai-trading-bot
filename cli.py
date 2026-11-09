@@ -43,7 +43,7 @@ def cmd_run(args: argparse.Namespace) -> None:
     live_mode = live and not paper
 
     if live_mode:
-        print("⚠️  WARNING: LIVE TRADING MODE ENABLED")
+        print("[WARNING]  WARNING: LIVE TRADING MODE ENABLED")
         print("   This will use real money and place actual trades.")
 
     # --safe-compounder mode: edge-based NO-side only
@@ -57,7 +57,7 @@ def cmd_run(args: argparse.Namespace) -> None:
 
     # --beast mode: original aggressive settings (NOT default)
     if beast:
-        print("⚠️  BEAST MODE: Aggressive settings enabled.")
+        print("[WARNING]  BEAST MODE: Aggressive settings enabled.")
         print("   WARNING: Aggressive settings with no guardrails. Use at your own risk.")
         from beast_mode_bot import BeastModeBot
         bot = BeastModeBot(live_mode=live_mode)
@@ -70,7 +70,7 @@ def cmd_run(args: argparse.Namespace) -> None:
     # DEFAULT: AI directional strategy with disciplined settings active.
     # Despite earlier README copy, this is a single-model OpenRouter call
     # per decision (with a fallback chain), not a parallel ensemble.
-    print("🤖  AI DIRECTIONAL MODE (default)")
+    print("[BOT]  AI DIRECTIONAL MODE (default)")
     print("   Single-model OpenRouter call per decision (fallback chain on error).")
     print("   Category scoring + portfolio guardrails active.")
     print("   Use --safe-compounder for conservative math-only mode.")
@@ -108,7 +108,7 @@ def _run_safe_compounder(
     from src.clients.kalshi_client import KalshiClient
     from src.strategies.safe_compounder import SafeCompounder
 
-    print("🔒 SAFE COMPOUNDER MODE")
+    print("[SAFE COMPOUNDER MODE]")
     print("   NO-side only | Edge-based | Near-certain outcomes")
     if not live_mode:
         print("   DRY RUN — no real orders will be placed")
@@ -136,7 +136,7 @@ def _run_safe_compounder(
             except Exception as exc:
                 # One bad cycle shouldn't kill the loop. Log and keep going.
                 print(f"Cycle {cycle} failed: {exc}. Continuing after {interval}s.")
-            print(f"\n⏳ Sleeping {interval}s before next cycle...")
+            print(f"\n[WAIT] Sleeping {interval}s before next cycle...")
             await asyncio.sleep(interval)
 
     try:
@@ -176,7 +176,7 @@ def cmd_daily(args: argparse.Namespace) -> None:
             print(f"  DAILY RUN — {'LIVE' if live else 'DRY-RUN'} — {datetime.now():%Y-%m-%d %H:%M}")
             print("=" * 60)
             print(
-                f"  Governor: {'🛑 HALTED' if decision.halted else '✅ OK'} | "
+                f"  Governor: {'[HALTED] HALTED' if decision.halted else '[OK] OK'} | "
                 f"equity ${decision.current_equity_cents/100:.2f} | "
                 f"day P&L ${decision.daily_pnl_cents/100:+.2f} | "
                 f"dd {decision.drawdown_pct:.1f}%"
@@ -1300,14 +1300,14 @@ def cmd_close_all(args: argparse.Namespace) -> None:
                     book = book_resp.get("orderbook", {})
                     side_bids = book.get(side, [])
                     if not side_bids:
-                        print(f"  ⚠️  {ticker}: no {side.upper()} bids in book — skipping")
+                        print(f"  [WARNING]  {ticker}: no {side.upper()} bids in book — skipping")
                         failed += 1
                         continue
                     # Kalshi orderbook bid entries are [price_cents, count].
                     # Best bid is the highest price.
                     best_bid_cents = max(int(level[0]) for level in side_bids)
                 except Exception as exc:
-                    print(f"  ❌ {ticker}: orderbook fetch failed — {exc}")
+                    print(f"  [ERROR] {ticker}: orderbook fetch failed — {exc}")
                     failed += 1
                     continue
 
@@ -1336,15 +1336,15 @@ def cmd_close_all(args: argparse.Namespace) -> None:
                     resp = await client.place_order(**order_params)
                     if resp and "order" in resp:
                         print(
-                            f"  ✅ {ticker}: sell {quantity} {side.upper()} "
+                            f"  [OK] {ticker}: sell {quantity} {side.upper()} "
                             f"@ {best_bid_cents}¢ — order_id={resp['order'].get('order_id', '?')}"
                         )
                         placed += 1
                     else:
-                        print(f"  ❌ {ticker}: unexpected response {resp}")
+                        print(f"  [ERROR] {ticker}: unexpected response {resp}")
                         failed += 1
                 except Exception as exc:
-                    print(f"  ❌ {ticker}: order failed — {exc}")
+                    print(f"  [ERROR] {ticker}: order failed — {exc}")
                     failed += 1
 
             print()

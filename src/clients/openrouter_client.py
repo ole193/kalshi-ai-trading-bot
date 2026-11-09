@@ -67,10 +67,10 @@ MODEL_PRICING: Dict[str, Dict[str, float]] = {
 
 # Ordered fallback chain -- if the requested model fails, try the next one.
 DEFAULT_FALLBACK_ORDER: List[str] = [
-    "anthropic/claude-sonnet-4",
-    "openai/gpt-4.1",
+    "anthropic/claude-sonnet-4.5",
+    "deepseek/deepseek-v3.2",
+    "openai/o3",
     "google/gemini-2.5-pro-preview",
-    "deepseek/deepseek-r1",
 ]
 
 

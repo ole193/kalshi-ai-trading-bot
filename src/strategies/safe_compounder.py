@@ -287,7 +287,7 @@ class SafeCompounder:
         portfolio = bal.get("portfolio_value", 0)
         cash = bal.get("balance", 0)
 
-        print(f"\n💰 Cash: ${cash/100:.2f} | Portfolio: ${portfolio/100:.2f} | "
+        print(f"\n[$] Cash: ${cash/100:.2f} | Portfolio: ${portfolio/100:.2f} | "
               f"Total: ${(cash+portfolio)/100:.2f}\n", flush=True)
 
         # (Removed 2026-09-26) The legacy "cancel YES orders" step ran even in dry
@@ -297,23 +297,23 @@ class SafeCompounder:
         cancelled = 0
 
         # Step 1: Fetch all markets
-        print("\n📡 Step 1: Fetching all active markets...", flush=True)
+        print("\n[SCAN] Step 1: Fetching all active markets...", flush=True)
         markets = await self._fetch_all_markets()
         print(f"  Fetched {len(markets)} markets", flush=True)
 
         # Step 2: Filter NO candidates
-        print("\n🔍 Step 2: Finding NO-side candidates (YES ≤ $0.20)...", flush=True)
+        print("\n[SEARCH] Step 2: Finding NO-side candidates (YES <= $0.20)...", flush=True)
         candidates = self._find_no_candidates(markets)
 
         # Step 3: Orderbook + edge check
-        print(f"\n📊 Step 3: Checking orderbooks for edge ≥ ${self.min_edge:.2f}...", flush=True)
+        print(f"\n[STATS] Step 3: Checking orderbooks for edge >= ${self.min_edge:.2f}...", flush=True)
         opportunities = await self._check_orderbook_and_price(candidates)
 
         # Display top opportunities
         sorted_opps = sorted(
             opportunities, key=lambda x: (-x["edge"], -x["annualized_roi"])
         )
-        print(f"\n📋 Top Opportunities:", flush=True)
+        print(f"\n[LIST] Top Opportunities:", flush=True)
         for opp in sorted_opps[:20]:
             print(
                 f"  NO ask:${opp['lowest_no_ask']:.2f} → our:${opp['our_price']:.2f} | "
@@ -326,14 +326,14 @@ class SafeCompounder:
             print(f"    {opp['title']}", flush=True)
 
         # Step 4: Place orders
-        print(f"\n🚀 Step 4: Placing maker orders (ask - $0.01)...", flush=True)
+        print(f"\n[START] Step 4: Placing maker orders (ask - $0.01)...", flush=True)
         stats = await self._place_resting_orders(sorted_opps, portfolio, cash)
 
         elapsed = time.time() - start
         bal = await self.client.get_balance()
 
         print(f"\n{'='*70}", flush=True)
-        print(f"📊 SAFE COMPOUNDER REPORT", flush=True)
+        print(f"[STATS] SAFE COMPOUNDER REPORT", flush=True)
         print(f"{'='*70}", flush=True)
         print(f"  Markets scanned:      {len(markets)}", flush=True)
         print(f"  NO candidates:        {len(candidates)}", flush=True)
@@ -457,7 +457,7 @@ class SafeCompounder:
             # Convert old cent format to dollar format if needed
             if yes_last > 1.0:
                 yes_last = yes_last / 100.0
-            if yes_last > 0.20:  # Only consider markets with YES ≤ $0.20
+            if yes_last > 0.20:  # Only consider markets with YES <= $0.20
                 continue
 
             close_time = m.get("close_time", "")
@@ -753,7 +753,7 @@ class SafeCompounder:
         portfolio = bal.get("portfolio_value", 0)
         cash = bal.get("balance", 0)
         print(
-            f"💰 Cash: ${cash/100:.2f} | Portfolio: ${portfolio/100:.2f} | "
+            f"[$] Cash: ${cash/100:.2f} | Portfolio: ${portfolio/100:.2f} | "
             f"Total: ${(cash+portfolio)/100:.2f}",
             flush=True,
         )
@@ -764,7 +764,7 @@ class SafeCompounder:
             no_resting = [o for o in resting if o.get("side") == "no"]
             yes_resting = [o for o in resting if o.get("side") == "yes"]
             print(
-                f"📋 Resting: {len(no_resting)} NO, {len(yes_resting)} YES",
+                f"[LIST] Resting: {len(no_resting)} NO, {len(yes_resting)} YES",
                 flush=True,
             )
         except Exception:
@@ -773,7 +773,7 @@ class SafeCompounder:
         try:
             fills_resp = await self.client.get_fills(limit=20)
             fill_list = fills_resp.get("fills", [])
-            print(f"\n📊 Last 20 fills:", flush=True)
+            print(f"\n[STATS] Last 20 fills:", flush=True)
             for f in fill_list:
                 ticker = f.get("ticker", "")
                 side = f.get("side", "")

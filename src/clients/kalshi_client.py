@@ -128,49 +128,58 @@ class KalshiClient(TradingLoggerMixin):
         self.logger.info("Kalshi client initialized", api_key_length=len(self.api_key) if self.api_key else 0)
     
     def _load_private_key(self) -> None:
-        """Load private key from file."""
+        """Load private key from file (supports both RSA and Ed25519)."""
         try:
             private_key_path = Path(self.private_key_path)
             if not private_key_path.exists():
                 raise KalshiAPIError(f"Private key file not found: {self.private_key_path}")
-            
+
             with open(private_key_path, 'rb') as f:
                 self.private_key = serialization.load_pem_private_key(
                     f.read(),
                     password=None
                 )
-            self.logger.info("Private key loaded successfully")
+            self.logger.info("Private key loaded successfully", key_type=type(self.private_key).__name__)
         except Exception as e:
             self.logger.error("Failed to load private key", error=str(e))
             raise KalshiAPIError(f"Failed to load private key: {e}")
     
     def _sign_request(self, timestamp: str, method: str, path: str) -> str:
         """
-        Sign request using RSA PSS signing method as per Kalshi API docs.
-        
+        Sign request using appropriate algorithm for key type (RSA PSS or Ed25519).
+
         Args:
             timestamp: Request timestamp in milliseconds
             method: HTTP method
             path: Request path
-        
+
         Returns:
             Base64 encoded signature
         """
         # Create message to sign: timestamp + method + path
         message = timestamp + method.upper() + path
         message_bytes = message.encode('utf-8')
-        
+
         try:
-            # Sign using RSA PSS as per Kalshi documentation
-            signature = self.private_key.sign(
-                message_bytes,
-                padding.PSS(
-                    mgf=padding.MGF1(hashes.SHA256()),
-                    salt_length=padding.PSS.DIGEST_LENGTH
-                ),
-                hashes.SHA256()
-            )
-            
+            from cryptography.hazmat.primitives.asymmetric import ed25519, rsa
+            from cryptography.hazmat.primitives import hashes, padding
+
+            if isinstance(self.private_key, ed25519.Ed25519PrivateKey):
+                # Ed25519 signing (Kalshi's current key format)
+                signature = self.private_key.sign(message_bytes)
+            elif isinstance(self.private_key, rsa.RSAPrivateKey):
+                # RSA PSS signing (legacy key format)
+                signature = self.private_key.sign(
+                    message_bytes,
+                    padding.PSS(
+                        mgf=padding.MGF1(hashes.SHA256()),
+                        salt_length=padding.PSS.DIGEST_LENGTH
+                    ),
+                    hashes.SHA256()
+                )
+            else:
+                raise KalshiAPIError(f"Unsupported private key type: {type(self.private_key).__name__}")
+
             return base64.b64encode(signature).decode('utf-8')
         except Exception as e:
             self.logger.error("Failed to sign request", error=str(e))

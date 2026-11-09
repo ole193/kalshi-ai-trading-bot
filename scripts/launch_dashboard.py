@@ -27,11 +27,11 @@ def check_requirements():
             missing_packages.append(package)
     
     if missing_packages:
-        print("❌ Missing required packages:")
+        print("[ERROR] Missing required packages:")
         for package in missing_packages:
             print(f"   - {package}")
         print()
-        print("📦 Install missing packages:")
+        print("[PACKAGE] Install missing packages:")
         print(f"   pip install {' '.join(missing_packages)}")
         print()
         print("Or install all dashboard requirements:")
@@ -43,7 +43,7 @@ def check_requirements():
 def launch_dashboard():
     """Launch the Streamlit dashboard."""
     
-    print("🚀 Trading System Dashboard Launcher")
+    print("[START] Trading System Dashboard Launcher")
     print("=" * 50)
     
     # Look for trading_dashboard.py: first in the same directory as this script,
@@ -53,19 +53,19 @@ def launch_dashboard():
     if not dashboard_path.exists():
         dashboard_path = Path("trading_dashboard.py")
     if not dashboard_path.exists():
-        print("❌ Error: trading_dashboard.py not found")
-        print("💡 Make sure you're running this from the kalshi project root")
+        print("[ERROR] Error: trading_dashboard.py not found")
+        print("[TIP] Make sure you're running this from the kalshi project root")
         return False
     
     # Check requirements
     if not check_requirements():
         return False
     
-    print("✅ All requirements satisfied")
-    print("🌐 Launching dashboard...")
+    print("[OK] All requirements satisfied")
+    print("[WEB] Launching dashboard...")
     print()
-    print("📊 Dashboard will open in your browser at: http://localhost:8501")
-    print("⏹️ Press Ctrl+C to stop the dashboard")
+    print("[STATS] Dashboard will open in your browser at: http://localhost:8502")
+    print("[STOP] Press Ctrl+C to stop the dashboard")
     print()
     
     try:
@@ -77,13 +77,13 @@ def launch_dashboard():
             "run", 
             str(dashboard_path),
             "--server.address", "localhost",
-            "--server.port", "8501",
+            "--server.port", "8502",
             "--browser.gatherUsageStats", "false"
         ])
     except KeyboardInterrupt:
         print("\n👋 Dashboard stopped")
     except Exception as e:
-        print(f"❌ Error launching dashboard: {e}")
+        print(f"[ERROR] Error launching dashboard: {e}")
         return False
     
     return True
